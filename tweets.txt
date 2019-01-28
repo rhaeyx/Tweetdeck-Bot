@@ -1,50 +1,20 @@
-This is tweet # 0
-This is tweet # 1
-This is tweet # 2
-This is tweet # 3
-This is tweet # 4
-This is tweet # 5
-This is tweet # 6
-This is tweet # 7
-This is tweet # 8
-This is tweet # 9
-This is tweet # 10
-This is tweet # 11
-This is tweet # 12
-This is tweet # 13
-This is tweet # 14
-This is tweet # 15
-This is tweet # 16
-This is tweet # 17
-This is tweet # 18
-This is tweet # 19
-This is tweet # 20
-This is tweet # 21
-This is tweet # 22
-This is tweet # 23
-This is tweet # 24
-This is tweet # 25
-This is tweet # 26
-This is tweet # 27
-This is tweet # 28
-This is tweet # 29
-This is tweet # 30
-This is tweet # 31
-This is tweet # 32
-This is tweet # 33
-This is tweet # 34
-This is tweet # 35
-This is tweet # 36
-This is tweet # 37
-This is tweet # 38
-This is tweet # 39
-This is tweet # 40
-This is tweet # 41
-This is tweet # 42
-This is tweet # 43
-This is tweet # 44
-This is tweet # 45
-This is tweet # 46
-This is tweet # 47
-This is tweet # 48
-This is tweet # 49
+# 0 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 1 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 2 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 3 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 4 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 5 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 6 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 7 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 8 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 9 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 10 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 11 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 12 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 13 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 14 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 15 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 16 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 17 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 18 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
+# 19 Star the repo: http:https://github.com/rhaeyx/Tweetdeck-Bot
