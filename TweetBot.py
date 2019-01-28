@@ -15,106 +15,197 @@
     10. Click the tweet button.
 """
 
-import pyautogui
+from pyautogui import *
 import time
 from datetime import datetime
 from math import floor
+from random import randint
 
 class TweetBot:
-    tweetButton = (408,465)
-    tweetButtonColor = (149,189,220)
-    textField = (325,350)
-    schedTweetButton = (325,580)
-    hourBox = (255,450)
-    originDay = (310,530) # Top of the calendar
-    originDate = 1
-    sendTweetButton = (385,280)
+    """
+        TweetBot(starting_day):
+    """
+    # Initialize variables for coords "(0,0)" and colors "(R, G, B)".
+    tweet_btn = (0,0)
+    tweet_btn_color = (0,0,0) 
+    text_box = (0, 0) 
+    sched_btn = (0, 0) 
+    hour_box = (0, 0) 
+    calendar = (0, 0) 
+    period_btn = (0,0) # Period, am or pm.
+    period_btn_color = (0,0,0) # R, G, B
+    current_month = 1
+    month_btn = (0,0)
+    originDate = 0
 
-    def __init__(self, starting_date):
-        self.originDate = starting_date - 1
+    # Month: Days in a month. 1 for January and so on.
+    maximum_days = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30,
+                    7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
 
-    def loaded(self):
+    def setup(self):
+        # Setup the coordinates for buttons, textbox and set the color.
+        try:
+            print('Setting up some variables and coordinates...')
+
+            self.current_month = datetime.now().month
+            print('1/7 - Current month is', self.current_month)
+
+            self.tweet_btn = locateCenterOnScreen('tweet_btn.png')
+            self.tweet_btn_color = screenshot().getpixel(self.tweet_btn)
+            print('2/7 - Tweet button located.')
+
+            self.text_box = locateCenterOnScreen('text_box.png')
+            print('3/7 - Text box located.')
+
+            self.sched_btn = locateCenterOnScreen('sched_btn.png')
+            print('4/7 - Schedule button located.')
+           
+            click(self.sched_btn)
+            scroll(-300)
+            time.sleep(1)
+            self.hour_box = locateCenterOnScreen('hour_box.png')
+            print('5/7 - Time boxes located.')
+
+            # If period_pm is not found, it will cause an error.
+            try: 
+                self.period_btn = locateOnScreen('period_pm.png')
+            # Catch it, and then click the period box to set it to pm
+            # then set the coordinates.
+            except:
+                click(locateCenterOnScreen('period_box.png'))
+                moveRel(75,0, duration=0.2)
+                click(clicks=2, interval=0.1)
+                time.sleep(1)
+                self.period_btn = locateOnScreen('period_pm.png')
+
+            self.month_btn = locateCenterOnScreen('month_btn.png')
+
+            # Get the bottom right pix, by adding top coord + height and left coord + width.
+            self.period_btn = (self.period_btn[0] + self.period_btn[2], self.period_btn[1] + self.period_btn[3])
+            self.period_btn_color = screenshot().getpixel((self.period_btn[0], self.period_btn[1]))
+            print('6/7 - AM or PM box located.')
+
+            self.calendar = locateCenterOnScreen('calendar.png') 
+            print('7/7 - Calendar located.\nResetting.')
+            click(locateCenterOnScreen('remove_btn.png'))
+        except:
+            print('ERROR: Make sure the tweetdeck dashboard for tweeting is open and visible\nand is showing the default dashboard.')
+
+    def is_loaded(self):
         # Check if the page have been loaded.
-        if pyautogui.pixelMatchesColor(self.tweetButton[0], self.tweetButton[1], self.tweetButtonColor):
+        if pixelMatchesColor(self.tweet_btn[0], self.tweet_btn[1], self.tweet_btn_color):
             return True
         return False
 
     def type_in_textfield(self, text):
-        # I use move and click, cause directly clicking has a high chance it will cause some issues.
-        pyautogui.moveTo(self.textField[0], self.textField[1], duration=1)
-        pyautogui.click()
-        pyautogui.typewrite(text, interval=0.10)
+        # Click the text box and type in the text.
+        click(self.text_box[0], self.text_box[1], duration=1)
+        typewrite(text, interval=0.1)
 
-    def sched_tweet(self, hour, min, m): # m is am or pm
-        pyautogui.moveTo(self.schedTweetButton[0], self.schedTweetButton[1], duration=1)
-        pyautogui.click() # Click sched tweet button.
-        time.sleep(1) # Add some delay to let the calendar open up.
-        pyautogui.scroll(-300)
-        pyautogui.moveTo(self.hourBox[0], self.hourBox[1]) # Focus on the hour input box.
-        pyautogui.click()
-        pyautogui.typewrite('\b\b'+str(hour)+'\t', interval=0.5) # Input hour then hit tab
-        pyautogui.typewrite('\b'+str(min), interval=0.5) # Input min
-        if m.upper() == 'PM' and self.am_pm() == 'PM': #
-            return True # return something to stop the code from running.
+    def sched_tweet(self, hour, min, period):
+        click(self.sched_btn[0], self.sched_btn[1], duration=0.5) 
+        # Add some delay to let the calendar open up and let the page scroll down.
+        time.sleep(1) 
+        scroll(-300) 
+        time.sleep(1)
+        # Click the hour input box and input hour and minute.
+        click(self.hour_box[0], self.hour_box[1], clicks=2)
+        typewrite('\b'+str(hour)+'\t', interval=0.1) 
+        typewrite('\b'+str(min), interval=0.2) 
+        if period.upper() == self.am_pm(): 
+            return  
         else:
-            pyautogui.click(340,450)
+            click((self.period_btn[0], self.period_btn[1]))        
 
-    def click_day(self, day):
-        pyautogui.moveTo(self.originDay[0], self.originDay[1], duration=2)
-        pyautogui.click()
-        time.sleep(2)
-        numOfTabs = day - self.originDate + 8
-        pyautogui.typewrite('\t' * numOfTabs , interval=0.20 )
-        time.sleep(2)
-        pyautogui.typewrite('\n' * 2)
+    def click_day(self, month, day):
+        # Set month.
+        self.set_month(self.current_month, month)
+
+        # Click the day chosen. first_date is the coords for the day 1 of the month.
+        first_date = (0,0)
+        try:
+            first_date = locateCenterOnScreen('1_active.png')
+        except:
+            first_date = locateCenterOnScreen('1_inactive.png')
+
+        # Set day.
+        click((first_date[0], first_date[1]), clicks=2)
+
+        num_of_tabs = day - 1
+        typewrite('\t' * num_of_tabs, interval=0.1)
+        # Hit enter key two times to select that day.
+        typewrite('\n\n')
 
     def am_pm(self):
         # Check a specific pixel on the screen, that pixel is the top-left tip of the P in PM
         # If that color is not white, that means its PM, if its white that means its AM
-        pixelCoord = (331,446)
-        pixelColor = (29,161,242)
-        if pyautogui.pixelMatchesColor(pixelCoord[0],pixelCoord[1],pixelColor):
+        if pixelMatchesColor(self.period_btn[0], self.period_btn[1], self.period_btn_color):
             return 'PM'
         return 'AM'
 
-    def send_tweet(self):
-        pyautogui.moveTo(self.sendTweetButton[0], self.sendTweetButton[1], duration=1)
-        pyautogui.click()
+    def set_month(self, current_month, target_month):
+        # Current month is provided by datetime function.
+        difference = 0
+        if current_month != target_month:
+            difference = target_month - current_month
+        moveTo(self.month_btn)
+        click(clicks=difference, interval=0.5)
 
-    def tweetbot(self, text, hour, min, m, day):
-        while not self.loaded() :
+
+
+    def send_tweet(self):
+        tweet_btn_coords = locateCenterOnScreen('active_tweet_btn.png')
+        click(tweet_btn_coords)
+
+    def input_bot(self, text, hour, min, period, month, day):
+        # Text is the text to be tweeted.
+        while not self.is_loaded() :
             time.sleep(1)
         self.type_in_textfield(text)
-        self.sched_tweet(hour, min, m)
-        time.sleep(2)
-        self.click_day(day)
+        self.sched_tweet(hour, min, period)
+        # time.sleep(2)
+        self.click_day(month, day)
         self.send_tweet()
 
-        # Needs a text file, two 'times' for when to post
-    def TwitterBotStart(self, txt, time_a, time_b):
-        part_of_the_day = { '12': {'hour': 12, 'min': 30},
-                            '3' : {'hour':  3, 'min': 00},
-                            '4' : {'hour':  4, 'min': 50},
-                            '6' : {'hour':  6, 'min': 45}
-                           }
+       
+    def TwitterBotStart(self, text_file, times, starting_date):
+        """
+            TwitterBotStart(textfile, [(hour, min, period),(hour, min, period),(hour, min, period)])        
+            1. Text file with the tweets. 
+            2. List of tuples, each tuple with an hour, min and period. (5,30,'am')
+            3. starting_date = (MM, DD)
+        """
 
-        file = open(txt, 'r')
-        file = file.read()
-        lines = file.split('\n')
-        print(lines)
+        self.setup()
 
-        counter = 1
-        time_to_post = (part_of_the_day[time_a]['hour'], part_of_the_day[time_a]['min'])
-        post_day = self.originDate + 1 # First day to post
+        lines = ''
+        print('Opening', text_file, '...')
+        with open(text_file, 'r') as f:
+            f = f.read()
+            lines = f.split('\n')
 
-        for line in lines:
-            if counter % 2 == 0: # If counter is even post on the other time
-                time_to_post = (part_of_the_day[time_b]['hour'], part_of_the_day[time_b]['min'])
+        month = starting_date[0]
+        date = starting_date[1]
+        counter = 0
 
-            self.tweetbot(line, time_to_post[0], time_to_post[1], 'pm', floor(post_day))
+        while len(lines) != 0:
+            # time represents the time in the day.
+            for time in times:
+                # Select a random tweet.
+                random_index = randint(0, len(lines)-1)
+                line = lines.pop(random_index)
+                self.input_bot(line, time[0], time[1], time[2], month, date)
+                print('Scheduled for', str(time[0])+':'+str(time[1]), time[2],'=', line)
+                counter += 1
 
-            counter += 1
-            post_day += 0.5
-
+            if date < self.maximum_days[month]:
+                date += 1
+            else: 
+                month += 1
+                date = 1
+    
         print('Done. Scheduled ', counter, ' tweets.')
         input('Press enter to close.')
+
+    if __name__ == '__main__':
+        a = 1
