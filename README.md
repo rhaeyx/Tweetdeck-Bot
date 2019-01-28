@@ -23,3 +23,6 @@ cd C:/Users/Desktop/folder-name
 ```
 9. Now, run twitter.py and enjoy.
 In command prompt or terminal type this `twitter.py` and enter.
+
+
+##### Note: Only works with text for now.
