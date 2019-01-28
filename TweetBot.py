@@ -134,12 +134,10 @@ class TweetBot:
                 first_date = locateCenterOnScreen('images/1_blue.png')
         time.sleep(1)
         # Set day.
-        print('Clicking first date.')
         click(self.calendar)
         doubleClick((first_date[0], first_date[1]))
         
         num_of_tabs = day - 1
-        print('Num of tabs', num_of_tabs)
         typewrite('\t' * num_of_tabs, interval=0.1)
         # Hit enter key two times to select that day.
         typewrite('\n\n')
@@ -206,13 +204,19 @@ class TweetBot:
             for time_slot in times:
                 if len(lines) > 1:
                     line = lines.pop(randint(0,len(lines)-1))
+                    if len(line) > 279: # Max characters
+                        continue
                     self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
                     print('Scheduled: ', line)
                     counter += 1
                 else:
                     line = lines.pop(0)
+                    if len(line) > 279:
+                        continue
                     self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
                     line = lines.pop(0)
+                    if len(line) > 279:
+                        continue
                     self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
            
             if day < self.maximum_days[month]:
