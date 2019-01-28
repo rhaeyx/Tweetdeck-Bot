@@ -122,14 +122,16 @@ class TweetBot:
     def click_day(self, month, day):
         # Set month.
         self.set_month(self.current_month, month)
-
+    
         # Click the day chosen. first_date is the coords for the day 1 of the month.
         first_date = (0,0)
         try:
             first_date = locateCenterOnScreen('images/1_active.png')
         except:
-            first_date = locateCenterOnScreen('images/1_inactive.png')
-
+            try:
+                first_date = locateCenterOnScreen('images/1_inactive.png')
+            except:
+                first_date = locateCenterOnScreen('images/1_blue.png')
         time.sleep(1)
         # Set day.
         print('Clicking first date.')
@@ -199,13 +201,20 @@ class TweetBot:
         day = starting_date[1]
         counter = 0
 
+        
         while len(lines) != 0:
             for time_slot in times:
-                line = lines.pop(randint(0,len(lines)-1))
-                self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
-                print('Scheduled: ', line)
-                counter += 1
-
+                if len(lines) > 1:
+                    line = lines.pop(randint(0,len(lines)-1))
+                    self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
+                    print('Scheduled: ', line)
+                    counter += 1
+                else:
+                    line = lines.pop(0)
+                    self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
+                    line = lines.pop(0)
+                    self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
+           
             if day < self.maximum_days[month]:
                 day += 1
             else:
