@@ -1,232 +1,156 @@
-"""
-    tweetdeck-bot.py v 1.0 - rhaey
-    TweetDeck form fill-up bot. To fill up and schedule your tweets.
-
-    0. Check the page if it has loaded.
-    1. Click text field.
-    2. Type in text field.
-    3. Click schedule tweet.
-    4. Scroll down.
-    5. Click on hour.
-    6. Delete the text, and type the hour wanted.
-    7. Move to minute option, with tab.
-    8. Move to the AM/PM option, and change accordingly.
-    9. Click the day.
-    10. Click the tweet button.
-"""
-
-from pyautogui import *
-import time
-from datetime import datetime
-from math import floor
+from selenium import webdriver
+from time import sleep
 from random import randint
 
-class TweetBot:
-    """
-        TweetBot(starting_day):
-    """
-    # Initialize variables for coords "(0,0)" and colors "(R, G, B)".
-    tweet_btn = (0,0)
-    tweet_btn_color = (0,0,0) 
-    text_box = (0, 0) 
-    sched_btn = (0, 0) 
-    hour_box = (0, 0) 
-    calendar = (0, 0) 
-    period_btn = (0,0) # Period, am or pm.
-    period_btn_color = (0,0,0) # R, G, B
-    current_month = 1
-    month_btn = (0,0)
-    originDate = 0
-    move_month = True
+class tweetdeck:
 
-    # Month: Days in a month. 1 for January and so on.
-    maximum_days = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30,
-                    7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
+    def __init__(self, username='username', password='password'):
+        self.username = username
+        self.password = password
 
-    def setup(self):
-        # Setup the coordinates for buttons, textbox and set the color.
-        try:
-            print('> Setting up some variables and coordinates...')
-
-            self.current_month = datetime.now().month
-            print('1/7 - Current month is', self.current_month)
-
-            self.tweet_btn = locateCenterOnScreen('images/tweet_btn.png')
-            self.tweet_btn_color = screenshot().getpixel(self.tweet_btn)
-            print('2/7 - Tweet button located.')
-
-            self.text_box = locateCenterOnScreen('images/text_box.png')
-            print('3/7 - Text box located.')
-
-            self.sched_btn = locateCenterOnScreen('images/sched_btn.png')
-            print('4/7 - Schedule button located.')
-           
-            click(self.sched_btn)
-            scroll(-300)
-            time.sleep(1)
-            self.hour_box = locateCenterOnScreen('images/hour_box.png')
-            print('5/7 - Time boxes located.')
-
-            # If period_pm is not found, it will cause an error.
-            try: 
-                self.period_btn = locateOnScreen('images/period_pm.png')
-            # Catch it, and then click the period box to set it to pm
-            # then set the coordinates.
-            except:
-                click(locateCenterOnScreen('images/period_box.png'))
-                moveRel(75,0, duration=0.2)
-                click(clicks=2, interval=0.1)
-                time.sleep(1)
-                self.period_btn = locateOnScreen('images/period_pm.png')
-
-            self.month_btn = locateCenterOnScreen('images/month_btn.png')
-
-            # Get the bottom right pix, by adding top coord + height and left coord + width.
-            self.period_btn = (self.period_btn[0] + self.period_btn[2], self.period_btn[1] + self.period_btn[3])
-            self.period_btn_color = screenshot().getpixel((self.period_btn[0], self.period_btn[1]))
-            print('6/7 - AM or PM box located.')
-
-            self.calendar = locateCenterOnScreen('images/calendar.png') 
-            print('7/7 - Calendar located.\nResetting.')
-            click(locateCenterOnScreen('images/remove_btn.png'))
-        except:
-            print('ERROR: Make sure the tweetdeck dashboard for tweeting is open and visible and is showing the default dashboard.')
-            exit()
-
-    def is_loaded(self):
-        # Check if the page have been loaded.
-        if pixelMatchesColor(self.tweet_btn[0], self.tweet_btn[1], self.tweet_btn_color):
-            return True
-        return False
-
-    def type_in_textfield(self, text):
-        # Click the text box and type in the text.
-        click(self.text_box[0], self.text_box[1], duration=1)
-        typewrite(text, interval=0.1)
-
-    def sched_tweet(self, hour, min, period):
-        click(self.sched_btn[0], self.sched_btn[1], duration=0.5) 
-        # Add some delay to let the calendar open up and let the page scroll down.
-        time.sleep(1) 
-        scroll(-300) 
-        time.sleep(1)
-        # Click the hour input box and input hour and minute.
-        click(self.hour_box[0], self.hour_box[1], clicks=2)
-        typewrite('\b'+str(hour)+'\t', interval=0.1) 
-        typewrite('\b'+str(min), interval=0.2) 
-        if period.upper() == self.am_pm(): 
-            return  
-        else:
-            click((self.period_btn[0], self.period_btn[1]))        
-
-    def click_day(self, month, day):
-        # Set month.
-        self.set_month(self.current_month, month)
+    def open_tweetdeck(self):
+        self.chrome = webdriver.Chrome('chromedriver.exe')
+        self.chrome.get('https://tweetdeck.twitter.com')
     
-        # Click the day chosen. first_date is the coords for the day 1 of the month.
-        first_date = (0,0)
-        try:
-            first_date = locateCenterOnScreen('images/1_active.png')
-        except:
-            try:
-                first_date = locateCenterOnScreen('images/1_inactive.png')
-            except:
-                first_date = locateCenterOnScreen('images/1_blue.png')
-        time.sleep(1)
-        # Set day.
-        click(self.calendar)
-        doubleClick((first_date[0], first_date[1]))
+    def login(self):
+        self.chrome.find_element_by_xpath('/html/body/div[1]/div[3]/div/div[1]/form/div[1]/a').click()
+        sleep(5)
+        username = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
+        username.send_keys(self.username)
+        password = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[2]/input')
+        password.send_keys(self.password)
+        sign_in = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/div[2]/button')
+        sign_in.click()
+
+    def set_month(self, current_month, target_month, current_year, target_year):
+        months_dict = {'January' : 1, 'February' : 2, 'March' : 3, 'April' : 4, 
+                       'May' : 5, 'June' : 6, 'July' : 7, 'August' : 8, 
+                       'September': 9, 'October': 10, 'November': 11, 'December': 12}
+
+        current_month = months_dict[current_month]
+        current_year = int(current_year)
+
+        clicks = target_month - current_month
+        month_btn = ''
+
+        if clicks == 0:
+            return
+        elif clicks > 0:
+            month_btn = self.chrome.find_element_by_xpath('//*[@id="next-month"]')
+        else:
+            month_btn = self.chrome.find_element_by_xpath('//*[@id="prev-month"]')
+            if target_year != current_year:
+                diff = target_year - current_year
+                clicks += (12 * diff)
+
+            clicks = abs(clicks)
+
+        for click in range(clicks):
+            month_btn.click()
+             
+    def fill_up(self, text, hour, minute, period, month, day, year):
+        """
+            fill_up(text, hour, minute, period, month, day, year)
+            
+            input types: 
+            hour - int        day - int
+            minute - int      year - int
+            period - str      month - int
+        """
+        textbox = self.chrome.find_element_by_xpath('/html/body/div[3]/div[2]/div[1]/div/div/div[1]/div[7]/textarea')
+        textbox.send_keys(text)
+
+        sched_tweet = self.chrome.find_element_by_xpath('/html/body/div[3]/div[2]/div[1]/div/div/div[1]/div[13]/button')
+        sched_tweet.click()
+
+        hour_box = self.chrome.find_element_by_xpath('//*[@id="scheduled-hour"]')
+        hour_box.send_keys('\b\b'+str(hour))
         
-        num_of_tabs = day - 1
-        typewrite('\t' * num_of_tabs, interval=0.1)
-        # Hit enter key two times to select that day.
-        typewrite('\n\n')
+        minute_box = self.chrome.find_element_by_xpath('//*[@id="scheduled-minute"]')
+        minute_box.send_keys('\b\b'+str(minute))
 
-    def am_pm(self):
-        # Check a specific pixel on the screen, that pixel is the top-left tip of the P in PM
-        # If that color is not white, that means its PM, if its white that means its AM
-        if pixelMatchesColor(self.period_btn[0], self.period_btn[1], self.period_btn_color):
-            return 'PM'
-        return 'AM'
+        period_btn = self.chrome.find_element_by_xpath('//*[@id="amPm"]')
+        if period_btn.text != period.upper():
+            period_btn.click()
+            sleep(0.5)
 
-    def set_month(self, current_month, target_month):
-        # Current month is provided by datetime function.
-        difference = 0
-        if current_month != target_month and self.move_month:
-            difference = target_month - current_month
-            self.move_month = False
-        moveTo(self.month_btn)
-        click(clicks=difference, interval=0.5)
+        month_text = self.chrome.find_element_by_xpath('//*[@id="caltitle"]').text
+        current_month, current_year = month_text.split(' ')
+        self.set_month(current_month, month, current_year, year)
 
-    def send_tweet(self):
-        tweet_btn_coords = locateCenterOnScreen('images/ready_tweet_btn.png')
-        click(tweet_btn_coords)
+        date = self.chrome.find_element_by_link_text(str(day))
+        date.click()
 
-    def input_bot(self, text, hour, min, period, month, day):
-        # Text is the text to be tweeted.
-        while not self.is_loaded() :
-            time.sleep(1)
-        self.type_in_textfield(text)
-        self.sched_tweet(hour, min, period)
-        self.click_day(month, day)
-        self.send_tweet()
+        submit_btn = self.chrome.find_element_by_xpath('/html/body/div[3]/div[2]/div[1]/div/div/div[1]/div[12]/div/div/button')
+        submit_btn.click()
+   
+    def start(self, 
+              source='tweets.txt',
+              starting_date='12-09-2019',
+              time_slots=[(7, 00, 'AM'), (12, 30, 'PM'), (4, 30, 'PM'), (5, 00, 'PM'),
+                          (5, 30, 'PM'), (6, 30, 'PM'), (7, 30, 'PM'), (8, 30, 'PM')]):
+    
+        maximum_days = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
 
-    def read_text(self, text_file):
+        self.open_tweetdeck()
+        sleep(5) 
+        self.login()
+        sleep(5)
+
+        starting_date = starting_date.split('-')
+        month = int(starting_date[0])
+        day = int(starting_date[1])
+        year = int(starting_date[2])
+
         lines = ''
-        with open(text_file, 'r') as f:
-            lines = f.read().split('\n')
-        return lines
+        with open(source, 'r') as f:
+            f = f.read()
+            lines = f.split('\n')
 
-    def start(self, text_file, times, starting_date):
-        """
-            TwitterBotStart(textfile, [(hour, min, period),(hour, min, period),(hour, min, period)])        
-            1. Text file with the tweets. 
-            2. List of tuples, each tuple with an hour, min and period. (5,30,'am')
-            3. starting_date = (MM, DD)
-        """
-        print("""
-                Welcome to TweetDeck-Bot.py by rhaeyx
-                Consider giving this repo a star.
-                https://github.com/rhaeyx/Tweetdeck-Bot \n\n""")
-
-        self.setup()
-
-        print('Opening the text file:', text_file)
-        lines = self.read_text(text_file)
-
-        print('Starting the bot...')
-        month = starting_date[0]
-        day = starting_date[1]
-        counter = 0
-
-        
         while len(lines) != 0:
-            for time_slot in times:
-                if len(lines) > 1:
-                    line = lines.pop(randint(0,len(lines)-1))
-                    if len(line) > 279: # Max characters
-                        continue
-                    self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
-                    print('Scheduled: ', line)
-                    counter += 1
-                else:
-                    line = lines.pop(0)
-                    if len(line) > 279:
-                        continue
-                    self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
-                    line = lines.pop(0)
-                    if len(line) > 279:
-                        continue
-                    self.input_bot(line, time_slot[0], time_slot[1], time_slot[2], month, day)
-           
-            if day < self.maximum_days[month]:
-                day += 1
-            else:
-                day = 1
-                month += 1
-                self.move_month = True
+            print('[TweetDeck_Bot] Tweets for:', '-'.join([str(month), str(day), str(year)]))
+            for time_slot in time_slots:
 
-        print('Done. Scheduled ', counter, ' tweets.')
-        input('Thanks for using TweetDeck-Bot.py, please consider giving a star at\nhttps://github.com/rhaeyx/Tweetdeck-Bot.')
+                if len(lines) == 0:
+                    break
 
+                hour = time_slot[0]
+                minute = time_slot[1]
+                period = time_slot[2]
+
+                print('[TweetDeck_Bot] Time slot:', ':'.join([str(hour), str(minute)]), period)
+                random_index = randint(0, len(lines)-1)
+                line = lines.pop(random_index)
+                print('[TweetDeck_Bot] Tweet content:', line)
+                self.fill_up(line, hour, minute, period, month, day, year)
+              
+                sleep(2)
+
+            if day == maximum_days[month]: 
+               
+                if month == 12: 
+                    month = 1
+                    day = 1
+                    year += 1
+                else: 
+                    month += 1
+                    day = 1
+            else: 
+                day += 1 
+            
+        print('DONE.')
+
+    def delete_tweets(self):
+        
+        self.open_tweetdeck()
+        sleep(5) 
+        self.login()
+        sleep(5)
+       
+        while True:
+            try:
+                del_icon = self.chrome.find_element_by_xpath('//*[@id="container"]/div/section[2]/div/div[1]/div[1]/div[5]/div/article[1]/div/div[1]/a[2]')
+                del_icon.click()
+            except:
+                pass
     
