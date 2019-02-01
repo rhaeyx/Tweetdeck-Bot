@@ -113,7 +113,7 @@ class tweetdeck:
         day = int(starting_date[1])
         year = int(starting_date[2])
 
-        counter = 0
+        counter = 1
 
         print('[TweetDeck_Bot]Reading tweets to be scheduled...')
         lines = ''
