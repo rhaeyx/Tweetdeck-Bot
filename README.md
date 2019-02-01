@@ -2,27 +2,31 @@
 
 Bot used for automatically scheduling tweets with the use of the [TweetDeck](https://tweetdeck.twitter.com) feature provided by twitter.
 
-### Dependencies
+### Requirements
+* Have python 3.x installed.
+* Download [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)
+* Then install the selenium package, by opening command prompt or terminal and type this in
 ```
-pip install pyautogui
+python pip install selenium
+or
+python3 pip install selenium
 ```
 
 ### How to use:
 
-1. Download this whole repo.
-2. Check twitter.py - this is the main file, this is like the basic interface.
-3. Edit twitter.py as you want.
-4. Create a .txt file or modify the current tweets.txt. Place the tweets you want to tweet in there.
-5. After you are done configuring everything. Open [TweetDeck](https://tweetdeck.twitter.com), and log-in.
-6. Then uncollapse the tweet panel. Make sure, the browser is full height.
-7. Open command prompt or terminal.
-8. Go to the folder where you extracted the files.
+> Download this whole repo, by clicking clone or download. 
+> Extract those files to a folder, preferrably desktop.
+> Copy the chromedriver.exe you downloaded earlier to the folder.
+> Check bot.py - this is the main file, this is like the basic interface.
+> Edit bot.py as you want.
+> Create a .txt file or modify the current tweets.txt. Place the tweets you want to tweet in there.
+> Open command prompt or terminal.
+> Then go to that folder, by typing in some commands.
 ```
-cd file-path
-cd C:/Users/Desktop/folder-name
+cd path_of_the_folder
+cd C:/users/name/desktop/folder-name
 ```
-9. Now, run twitter.py and enjoy.
-In command prompt or terminal type this `twitter.py` and enter.
-
+> Then type in bot.py and enjoy.
 
 ##### Note: Only works with text for now.
+
