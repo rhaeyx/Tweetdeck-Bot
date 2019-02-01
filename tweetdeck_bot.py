@@ -92,20 +92,44 @@ class tweetdeck:
     
         maximum_days = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
 
+        print("""
+            Welcome to TweetDeck-Bot.py by rhaeyx
+            Please consider giving this repo a star. 
+            https://github.com/rhaeyx/Tweetdeck-Bot\n\n
+        """)
+
+        print('Starting bot...')
+
         self.open_tweetdeck()
         sleep(5) 
+
+        print('Logging in...')
         self.login()
         sleep(5)
+        print('Logged in.')
 
         starting_date = starting_date.split('-')
         month = int(starting_date[0])
         day = int(starting_date[1])
         year = int(starting_date[2])
 
+        counter = 0
+
+        print('Reading tweets to be scheduled...')
         lines = ''
         with open(source, 'r') as f:
             f = f.read()
             lines = f.split('\n')
+
+        print(len(lines), 'tweets found.')
+        print('Removing text, that exceed the twitter character limit...')
+        char_limit = 280
+        for line in lines:
+            if len(line) > char_limit:
+                lines.remove(line)
+        print(len(lines), 'total number of tweets after purge.')
+
+        print('Scheduling...\n')
 
         while len(lines) != 0:
             print('[TweetDeck_Bot] Tweets for:', '-'.join([str(month), str(day), str(year)]))
@@ -123,7 +147,7 @@ class tweetdeck:
                 line = lines.pop(random_index)
                 print('[TweetDeck_Bot] Tweet content:', line)
                 self.fill_up(line, hour, minute, period, month, day, year)
-              
+                counter += 1
                 sleep(2)
 
             if day == maximum_days[month]: 
@@ -138,7 +162,9 @@ class tweetdeck:
             else: 
                 day += 1 
             
-        print('DONE.')
+        print('Total number of tweets:', counter)
+        print('Thanks for using TweetDeck_Bot.py')
+        print('Consider following me on twitter\n https://twitter.com/rhaeyx')
 
     def delete_tweets(self):
         
