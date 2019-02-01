@@ -98,15 +98,15 @@ class tweetdeck:
             https://github.com/rhaeyx/Tweetdeck-Bot\n\n
         """)
 
-        print('Starting bot...')
+        print('[TweetDeck_Bot] Starting bot...')
 
         self.open_tweetdeck()
         sleep(5) 
 
-        print('Logging in...')
+        print('[TweetDeck_Bot] Logging in...')
         self.login()
         sleep(5)
-        print('Logged in.')
+        print('[TweetDeck_Bot] Logged in.')
 
         starting_date = starting_date.split('-')
         month = int(starting_date[0])
@@ -115,21 +115,21 @@ class tweetdeck:
 
         counter = 0
 
-        print('Reading tweets to be scheduled...')
+        print('[TweetDeck_Bot]Reading tweets to be scheduled...')
         lines = ''
         with open(source, 'r') as f:
             f = f.read()
             lines = f.split('\n')
 
-        print(len(lines), 'tweets found.')
-        print('Removing text, that exceed the twitter character limit...')
+        print('[TweetDeck_Bot]', len(lines), 'tweets found.')
+        print('[TweetDeck_Bot] Removing text, that exceed the twitter character limit...')
         char_limit = 280
         for line in lines:
             if len(line) > char_limit:
                 lines.remove(line)
-        print(len(lines), 'total number of tweets after purge.')
+        print('[TweetDeck_Bot]', len(lines), 'total number of tweets after purge.')
 
-        print('Scheduling...\n')
+        print('[TweetDeck_Bot] Scheduling...\n')
 
         while len(lines) != 0:
             print('[TweetDeck_Bot] Tweets for:', '-'.join([str(month), str(day), str(year)]))
@@ -142,10 +142,9 @@ class tweetdeck:
                 minute = time_slot[1]
                 period = time_slot[2]
 
-                print('[TweetDeck_Bot] Time slot:', ':'.join([str(hour), str(minute)]), period)
                 random_index = randint(0, len(lines)-1)
                 line = lines.pop(random_index)
-                print('[TweetDeck_Bot] Tweet content:', line)
+                print('[TweetDeck_Bot] Tweet #'+str(counter), 'will be tweeted on ',':'.join([str(hour), str(minute)]), period)
                 self.fill_up(line, hour, minute, period, month, day, year)
                 counter += 1
                 sleep(2)
@@ -162,9 +161,9 @@ class tweetdeck:
             else: 
                 day += 1 
             
-        print('Total number of tweets:', counter)
-        print('Thanks for using TweetDeck_Bot.py')
-        print('Consider following me on twitter\n https://twitter.com/rhaeyx')
+        print('[TweetDeck_Bot] Total number of tweets:', counter)
+        print('[TweetDeck_Bot] Thanks for using TweetDeck_Bot.py')
+        print('[TweetDeck_Bot] Consider following me on twitter\n https://twitter.com/rhaeyx')
 
     def delete_tweets(self):
         
