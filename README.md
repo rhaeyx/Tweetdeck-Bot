@@ -37,6 +37,6 @@ cd C:/users/name/desktop/folder-name
 
 9. Then type in bot.py and enjoy.
 
-##### Note: Only works with text for now.
+##### Note: Only works with text for now. Also, this is my very first project please leave review if possible.
 
 
