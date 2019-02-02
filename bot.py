@@ -25,6 +25,7 @@ bot.start(starting_date='12-09-2019', FORMAT: MM-DD-YYYY
           # Source file: file_name.txt, make sure to place the file in same folder, together with this
           # file and tweetdeck_bot.py
 """
+
 # EXAMPLE:
 bot.start(starting_date='12-09-2019',
           time_slots = [(8, 30, 'PM'),
