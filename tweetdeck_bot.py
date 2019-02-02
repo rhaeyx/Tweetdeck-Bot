@@ -14,16 +14,25 @@ class tweetdeck:
         self.chrome.get('https://tweetdeck.twitter.com')
     
     def login(self):
+        
         self.chrome.find_element_by_xpath('/html/body/div[1]/div[3]/div/div[1]/form/div[1]/a').click()
         sleep(5)
+
+        # Type in username
         username = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
         username.send_keys(self.username)
+       
+        # Type in password
         password = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[2]/input')
         password.send_keys(self.password)
+        
         sign_in = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/div[2]/button')
         sign_in.click()
 
     def set_month(self, current_month, target_month, current_year, target_year):
+        # Calculate the difference between the current month in the calendar and the
+        # target month, then click the button to change the months.
+        
         months_dict = {'January' : 1, 'February' : 2, 'March' : 3, 'April' : 4, 
                        'May' : 5, 'June' : 6, 'July' : 7, 'August' : 8, 
                        'September': 9, 'October': 10, 'November': 11, 'December': 12}
@@ -181,5 +190,3 @@ class tweetdeck:
         print('[TweetDeck_Bot] Thanks for using TweetDeck_Bot.py')
         print('[TweetDeck_Bot] Consider following me on twitter\n https://twitter.com/rhaeyx')
 
-        """ This should be in follow but not in master """
-    
