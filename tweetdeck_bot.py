@@ -4,10 +4,11 @@ from random import randint
 
 class tweetdeck:
 
-    def __init__(self, username='username', password='password'):
+    def __init__(self, username='rhaeyx', password='password'):
         self.username = username
         self.password = password
 
+    # Set up 
     def open_tweetdeck(self):
         self.chrome = webdriver.Chrome('chromedriver.exe')
         self.chrome.get('https://tweetdeck.twitter.com')
@@ -52,11 +53,12 @@ class tweetdeck:
         """
             fill_up(text, hour, minute, period, month, day, year)
             
-            input types: 
+            arg types: 
             hour - int        day - int
             minute - int      year - int
             period - str      month - int
         """
+
         textbox = self.chrome.find_element_by_xpath('/html/body/div[3]/div[2]/div[1]/div/div/div[1]/div[7]/textarea')
         textbox.send_keys(text)
 
@@ -90,12 +92,26 @@ class tweetdeck:
               time_slots=[(7, 00, 'AM'), (12, 30, 'PM'), (4, 30, 'PM'), (5, 00, 'PM'),
                           (5, 30, 'PM'), (6, 30, 'PM'), (7, 30, 'PM'), (8, 30, 'PM')]):
     
+        """
+            start(source='source_file_name.txt',
+                  starting_date='MM-DD-YYYY',
+                  time_slots=[(hour, min, 'AM'/'PM'), (hour, min, 'AM'/'PM'),
+                              (hour, min, 'AM'/'PM'), (hour, min, 'AM'/'PM')])   
+
+            arg types:
+            source - string
+            starting_date - string
+            time_slots - list of tuples, each tuple with 3 elements     
+        """
+
         maximum_days = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
 
         print("""
-            Welcome to TweetDeck-Bot.py by rhaeyx
-            Please consider giving this repo a star. 
-            https://github.com/rhaeyx/Tweetdeck-Bot\n\n
+            |=============================================|
+            | Welcome to TweetDeck-Bot.py by rhaeyx       |
+            | Please consider giving this repo a star.    |
+            | https://github.com/rhaeyx/Tweetdeck-Bot\n\n |
+            |=============================================|
         """)
 
         print('[TweetDeck_Bot] Starting bot...')
@@ -115,7 +131,7 @@ class tweetdeck:
 
         counter = 1
 
-        print('[TweetDeck_Bot]Reading tweets to be scheduled...')
+        print('[TweetDeck_Bot] Reading tweets to be scheduled...')
         lines = ''
         with open(source, 'r') as f:
             f = f.read()
@@ -165,17 +181,5 @@ class tweetdeck:
         print('[TweetDeck_Bot] Thanks for using TweetDeck_Bot.py')
         print('[TweetDeck_Bot] Consider following me on twitter\n https://twitter.com/rhaeyx')
 
-    def delete_tweets(self):
-        
-        self.open_tweetdeck()
-        sleep(5) 
-        self.login()
-        sleep(5)
-       
-        while True:
-            try:
-                del_icon = self.chrome.find_element_by_xpath('//*[@id="container"]/div/section[2]/div/div[1]/div[1]/div[5]/div/article[1]/div/div[1]/a[2]')
-                del_icon.click()
-            except:
-                pass
+
     
