@@ -31,7 +31,7 @@ class extra:
         self.chrome.find_element_by_link_text('Log in').click()
         sleep(5)
 
-        print('[TweetDeck_Like] Logging in to', self.username)
+        print('[TweetDeck_Extra] Logging in to', self.username)
         # Type in username
         username = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
         username.send_keys(self.username)
@@ -42,7 +42,7 @@ class extra:
 
         sign_in = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/div[2]/button')
         sign_in.click()
-        print('Logged in to', self.username)
+        print('[TweetDeck_Extra] Logged in to', self.username)
 
     def like(self, to_like=100):
         """
@@ -74,21 +74,25 @@ class extra:
                     if counter > to_like:
                         break
                     like_btn.click()
-                    print('[TweetDeck_Like] Like #' + str(counter))
+                    print('[TweetDeck_Extra] Like #' + str(counter))
                     counter += 1
                     sleep(0.5)
                 except:
                     continue
 
-        print('[TweetDeck_Like] Liked a total of ' + str(counter) + ' tweets.')
-        print('[TweetDeck_Like] Thank you for using TweetDeck_Bot.')
-        print('[TweetDeck_Like] Closing chrome instance...')
+        print('[TweetDeck_Extra] Liked a total of ' + str(counter) + ' tweets.')
+        print('[TweetDeck_Extra] Thank you for using TweetDeck_Bot.')
+        print('[TweetDeck_Extra] Closing chrome instance...')
         self.chrome.close()
 
     def follow(self, to_follow=50):
         """
-            Docstringggg.
+            When ran, will open a new chrome instance then go to twitter.com and log-in. Then go to the profile
+            of the guy that tweeted the first tweet found on the twitter home feed. Will then follow a specified n
+            number of accounts or if not specified, by default it will follow 50 accounts.
 
+            to_follow is the number of accounts to follow, by default it is set to 50.
+            type(to_follow) == integer
         """
 
         self.open_twitter()
@@ -119,7 +123,7 @@ class extra:
                         if counter > to_follow:
                             break
                         follow_btn.click()
-                        print('[TweetDeck_Like] Follow #' + str(counter + 1))
+                        print('[TweetDeck_Extra] Follow #' + str(counter + 1))
                         counter += 1
                         sleep(0.5)
                     except:
@@ -127,3 +131,17 @@ class extra:
 
             if counter > to_follow:
                 break
+
+        print('[TweetDeck_Extra] Followed a total of ' + str(counter) + ' accounts.')
+        print('[TweetDeck_Extra] Thank you for using TweetDeck_Bot.')
+        print('[TweetDeck_Extra] Closing chrome instance...')
+        self.chrome.close()
+
+    def start(self, to_like=100, to_follow=50):
+        """
+            Function to start the bot. Automatically, liking and following a specified number of amount.
+        """
+
+        self.like(to_like=to_like)
+
+        self.follow(to_follow=to_follow)

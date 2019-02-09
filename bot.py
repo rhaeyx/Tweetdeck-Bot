@@ -4,8 +4,10 @@
     https://github.com/rhaeyx/Tweetdeck-Bot
 
     Contents:
-        tweetdeck_bot.py - source code
+        tweetdeck_bot.py - code for automating tweetdeck tweet.
+        extra.py - code for automating likes and follows.
         bot.py(this) - file to execute
+        extra_bot.py - file to execute for auto follow and like
         tweets.txt - Example text file
 """
 
