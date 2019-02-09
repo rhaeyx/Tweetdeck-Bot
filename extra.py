@@ -147,6 +147,13 @@ class extra:
         """
             Function to start the bot. Automatically, liking and following a specified number of amount.
         """
+        print("""
+            |=============================================|
+            | Welcome to TweetDeck-Bot.py by rhaeyx       |
+            | Please consider giving this repo a star.    |
+            | https://github.com/rhaeyx/Tweetdeck-Bot\n\n |
+            |=============================================|
+        """)
 
         self.like(to_like=to_like)
 
