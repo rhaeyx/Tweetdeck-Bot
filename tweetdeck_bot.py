@@ -15,7 +15,6 @@ class tweetdeck:
 
     def login(self):
 
-        # self.chrome.find_element_by_xpath('/html/body/div[1]/div[3]/div/div[1]/form/div[1]/a').click()
         self.chrome.find_element_by_link_text('Log in').click()
         sleep(5)
 
@@ -190,5 +189,3 @@ class tweetdeck:
         print('[TweetDeck_Bot] Total number of tweets:', counter)
         print('[TweetDeck_Bot] Thanks for using TweetDeck_Bot.py')
         print('[TweetDeck_Bot] Consider following me on twitter\n https://twitter.com/rhaeyx')
-
-    
