@@ -10,24 +10,31 @@ class tweetdeck:
 
     # Set up
     def open_tweetdeck(self):
-        self.chrome = webdriver.Chrome('chromedriver.exe')
-        self.chrome.get('https://tweetdeck.twitter.com')
+        try:
+            self.chrome = webdriver.Chrome('chromedriver.exe')
+            self.chrome.get('https://tweetdeck.twitter.com')
+        except:
+            print('[TweetDeck_Bot] Something went wrong with opening chrome, try placing chromedriver.exe to the same folder.')
+            exit()
 
     def login(self):
+        try:
+            self.chrome.find_element_by_link_text('Log in').click()
+            sleep(5)
 
-        self.chrome.find_element_by_link_text('Log in').click()
-        sleep(5)
+            # Type in username
+            username = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
+            username.send_keys(self.username)
 
-        # Type in username
-        username = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
-        username.send_keys(self.username)
+            # Type in password
+            password = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[2]/input')
+            password.send_keys(self.password)
 
-        # Type in password
-        password = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[2]/input')
-        password.send_keys(self.password)
-
-        sign_in = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/div[2]/button')
-        sign_in.click()
+            sign_in = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/div[2]/button')
+            sign_in.click()
+        except:
+            print('[TweetDeck_Bot] Something went wrong with the log-in. Check the log-in details or try again.')
+            exit()
 
     def set_month(self, current_month, target_month, current_year, target_year):
         # Calculate the difference between the current month in the calendar and the
@@ -148,10 +155,12 @@ class tweetdeck:
 
         print('[TweetDeck_Bot]', len(lines), 'tweets found.')
         print('[TweetDeck_Bot] Removing text, that exceed the twitter character limit...')
+      
         char_limit = 280
         for line in lines:
             if len(line) > char_limit:
                 lines.remove(line)
+       
         print('[TweetDeck_Bot]', len(lines), 'total number of tweets after purge.')
 
         print('[TweetDeck_Bot] Scheduling...\n')
