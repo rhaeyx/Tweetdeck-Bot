@@ -8,24 +8,33 @@ class tweetdeck:
         self.username = username
         self.password = password
 
-    # Set up 
+    # Set up
     def open_tweetdeck(self):
         self.chrome = webdriver.Chrome('chromedriver.exe')
         self.chrome.get('https://tweetdeck.twitter.com')
-    
+
     def login(self):
-        self.chrome.find_element_by_xpath('/html/body/div[1]/div[3]/div/div[1]/form/div[1]/a').click()
+
+        self.chrome.find_element_by_link_text('Log in').click()
         sleep(5)
+
+        # Type in username
         username = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
         username.send_keys(self.username)
+
+        # Type in password
         password = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[2]/input')
         password.send_keys(self.password)
+
         sign_in = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/div[2]/button')
         sign_in.click()
 
     def set_month(self, current_month, target_month, current_year, target_year):
-        months_dict = {'January' : 1, 'February' : 2, 'March' : 3, 'April' : 4, 
-                       'May' : 5, 'June' : 6, 'July' : 7, 'August' : 8, 
+        # Calculate the difference between the current month in the calendar and the
+        # target month, then click the button to change the months.
+
+        months_dict = {'January' : 1, 'February' : 2, 'March' : 3, 'April' : 4,
+                       'May' : 5, 'June' : 6, 'July' : 7, 'August' : 8,
                        'September': 9, 'October': 10, 'November': 11, 'December': 12}
 
         current_month = months_dict[current_month]
@@ -48,12 +57,12 @@ class tweetdeck:
 
         for click in range(clicks):
             month_btn.click()
-             
+
     def fill_up(self, text, hour, minute, period, month, day, year):
         """
             fill_up(text, hour, minute, period, month, day, year)
-            
-            arg types: 
+
+            arg types:
             hour - int        day - int
             minute - int      year - int
             period - str      month - int
@@ -67,7 +76,7 @@ class tweetdeck:
 
         hour_box = self.chrome.find_element_by_xpath('//*[@id="scheduled-hour"]')
         hour_box.send_keys('\b\b'+str(hour))
-        
+
         minute_box = self.chrome.find_element_by_xpath('//*[@id="scheduled-minute"]')
         minute_box.send_keys('\b\b'+str(minute))
 
@@ -85,23 +94,23 @@ class tweetdeck:
 
         submit_btn = self.chrome.find_element_by_xpath('/html/body/div[3]/div[2]/div[1]/div/div/div[1]/div[12]/div/div/button')
         submit_btn.click()
-   
-    def start(self, 
+
+    def start(self,
               source='tweets.txt',
               starting_date='12-09-2019',
               time_slots=[(7, 00, 'AM'), (12, 30, 'PM'), (4, 30, 'PM'), (5, 00, 'PM'),
                           (5, 30, 'PM'), (6, 30, 'PM'), (7, 30, 'PM'), (8, 30, 'PM')]):
-    
+
         """
             start(source='source_file_name.txt',
                   starting_date='MM-DD-YYYY',
                   time_slots=[(hour, min, 'AM'/'PM'), (hour, min, 'AM'/'PM'),
-                              (hour, min, 'AM'/'PM'), (hour, min, 'AM'/'PM')])   
+                              (hour, min, 'AM'/'PM'), (hour, min, 'AM'/'PM')])
 
             arg types:
             source - string
             starting_date - string
-            time_slots - list of tuples, each tuple with 3 elements     
+            time_slots - list of tuples, each tuple with 3 elements
         """
 
         maximum_days = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
@@ -117,7 +126,7 @@ class tweetdeck:
         print('[TweetDeck_Bot] Starting bot...')
 
         self.open_tweetdeck()
-        sleep(5) 
+        sleep(5)
 
         print('[TweetDeck_Bot] Logging in...')
         self.login()
@@ -165,21 +174,18 @@ class tweetdeck:
                 counter += 1
                 sleep(2)
 
-            if day == maximum_days[month]: 
-               
-                if month == 12: 
+            if day == maximum_days[month]:
+
+                if month == 12:
                     month = 1
                     day = 1
                     year += 1
-                else: 
+                else:
                     month += 1
                     day = 1
-            else: 
-                day += 1 
-            
+            else:
+                day += 1
+
         print('[TweetDeck_Bot] Total number of tweets:', counter)
         print('[TweetDeck_Bot] Thanks for using TweetDeck_Bot.py')
         print('[TweetDeck_Bot] Consider following me on twitter\n https://twitter.com/rhaeyx')
-
-
-    
