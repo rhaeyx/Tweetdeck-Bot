@@ -1,27 +1,27 @@
 """
-    extra_bot.py, a project by rhaeyx
+    tweetdeck_bot.py, a project by rhaeyx
     Please consider giving this repo a star. 
     https://github.com/rhaeyx/Tweetdeck-Bot
 
     Contents:
-        tweetdeck.py - source code
-        bot.py(this) - file to execute
+        tweetdeck_bot.py - code for automating tweetdeck tweet.
+        extra.py - code for automating likes and follows.
+        bot.py - file to execute for automating tweetdeck tweets.
+        extra_bot.py(this) - file to execute for auto follow and like
         tweets.txt - Example text file
 """
+
 from bot_scripts.extra import extra
 
-# Account
-bot = extra(username='rhaeyx', password='rhaeyx')
+# Set username and password
+bot = extra(username='rhaeyx', password='placeholder')
 
-"""
-    LIKE TWEETS:
-        to_like - amount of tweets to like
-"""
-bot.like(to_like=200)
+# Start bot. Default values are just placeholders, change as you want.
 
-"""
-    FOLLOW ACCOUNTS:
-        to_follow - amount of accounts to follow
-"""
-bot.follow(to_follow=50)
+""" bot.start(to_like=100, to_follow=50) """
+
+# EXAMPLE:
+bot.start(to_like=100, 
+          to_follow=50)
+
 

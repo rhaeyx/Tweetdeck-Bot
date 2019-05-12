@@ -25,27 +25,34 @@ class extra:
 
     # Set up
     def open_twitter(self):
-        options = Options()
-        options.headless = self.headless
-        options.add_argument('--log-level=3')
-        options.add_argument('--silent')
-        self.chrome = webdriver.Chrome('chromedriver.exe', options=options)
-        self.chrome.get('https://twitter.com/login')
+        try:
+            options = Options()
+            options.headless = self.headless
+            options.add_argument('--log-level=3')
+            options.add_argument('--silent')
+            self.chrome = webdriver.Chrome('chromedriver.exe', options=options)
+            self.chrome.get('https://twitter.com/login')
+        except:
+            print('[TweetDeck_Extra] Something went wrong with opening chrome, try placing chromedriver.exe to the same folder or change the file path if you know what you\'re doing.')
+            exit()
 
     def login(self):
+        try:
+            print('[TweetDeck_Extra] Logging in to', self.username)
+            # Type in username
+            username = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
+            username.send_keys(self.username)
 
-        print('[TweetDeck_Extra] Logging in to', self.username)
-        # Type in username
-        username = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
-        username.send_keys(self.username)
+            # Type in password
+            password = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[2]/input')
+            password.send_keys(self.password)
 
-        # Type in password
-        password = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[2]/input')
-        password.send_keys(self.password)
-
-        sign_in = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/div[2]/button')
-        sign_in.click()
-        print('[TweetDeck_Extra] Logged in to', self.username)
+            sign_in = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/div[2]/button')
+            sign_in.click()
+            print('[TweetDeck_Extra] Logged in to', self.username)
+        except:
+            print('[TweetDeck_Extra] Something went wrong with the log-in. Check the log-in details or try again.')
+            exit()
 
     def like(self, to_like=100):
         """
@@ -90,8 +97,12 @@ class extra:
 
     def follow(self, to_follow=50):
         """
-            Docstringggg.
+            When ran, will open a new chrome instance then go to twitter.com and log-in. Then go to the profile
+            of the guy that tweeted the first tweet found on the twitter home feed. Will then follow a specified n
+            number of accounts or if not specified, by default it will follow 50 accounts.
 
+            to_follow is the number of accounts to follow, by default it is set to 50.
+            type(to_follow) == integer
         """
 
         self.open_twitter()
@@ -136,3 +147,19 @@ class extra:
         print('[TweetDeck_Extra] Closing chrome instance...')
         print('Follow me on twitter: twitter.com/rhaeyx')
         self.chrome.close()
+
+    def start(self, to_like=100, to_follow=50):
+        """
+            Function to start the bot. Automatically, liking and following a specified number of amount.
+        """
+        print("""
+            |=============================================|
+            | Welcome to TweetDeck-Bot.py by rhaeyx       |
+            | Please consider giving this repo a star.    |
+            | https://github.com/rhaeyx/Tweetdeck-Bot\n\n |
+            |=============================================|
+        """)
+
+        self.like(to_like=to_like)
+
+        self.follow(to_follow=to_follow)
