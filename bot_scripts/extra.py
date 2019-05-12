@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from time import sleep
 
 class extra:
@@ -11,27 +12,29 @@ class extra:
         Params:
             username = 'rhaeyx', type(username) == string
             password = 'password', type(password) == string
+            headless = True, type(headless) == boolean
     """
 
     def __init__(self,
                  username='rhaeyx',
-                 password='password'):
-
+                 password='password',
+                 headless=True):
+        self.headless = headless
         self.username = username
         self.password = password
 
     # Set up
     def open_twitter(self):
-        self.chrome = webdriver.Chrome('chromedriver.exe')
-        self.chrome.get('https://twitter.com')
+        options = Options()
+        options.headless = self.headless
+        options.add_argument('--log-level=3')
+        options.add_argument('--silent')
+        self.chrome = webdriver.Chrome('chromedriver.exe', options=options)
+        self.chrome.get('https://twitter.com/login')
 
     def login(self):
 
-        # self.chrome.find_element_by_xpath('/html/body/div[1]/div[3]/div/div[1]/form/div[1]/a').click()
-        self.chrome.find_element_by_link_text('Log in').click()
-        sleep(5)
-
-        print('[TweetDeck_Like] Logging in to', self.username)
+        print('[TweetDeck_Extra] Logging in to', self.username)
         # Type in username
         username = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
         username.send_keys(self.username)
@@ -42,7 +45,7 @@ class extra:
 
         sign_in = self.chrome.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/div[2]/button')
         sign_in.click()
-        print('Logged in to', self.username)
+        print('[TweetDeck_Extra] Logged in to', self.username)
 
     def like(self, to_like=100):
         """
@@ -74,15 +77,15 @@ class extra:
                     if counter > to_like:
                         break
                     like_btn.click()
-                    print('[TweetDeck_Like] Like #' + str(counter))
+                    print('[TweetDeck_Extra] Like #' + str(counter))
                     counter += 1
                     sleep(0.5)
                 except:
                     continue
 
-        print('[TweetDeck_Like] Liked a total of ' + str(counter) + ' tweets.')
-        print('[TweetDeck_Like] Thank you for using TweetDeck_Bot.')
-        print('[TweetDeck_Like] Closing chrome instance...')
+        print('[TweetDeck_Extra] Liked a total of ' + str(counter) + ' tweets.')
+        print('[TweetDeck_Extra] Thank you for using TweetDeck_Bot.')
+        print('[TweetDeck_Extra] Closing chrome instance...')
         self.chrome.close()
 
     def follow(self, to_follow=50):
@@ -106,7 +109,7 @@ class extra:
         followers_btn.click()
         sleep(5)
 
-        counter = 1
+        counter = 0
 
         while True:
 
@@ -116,14 +119,20 @@ class extra:
 
                 for follow_btn in follow_btns:
                     try:
-                        if counter > to_follow:
+                        if counter >= to_follow:
                             break
                         follow_btn.click()
-                        print('[TweetDeck_Like] Follow #' + str(counter + 1))
                         counter += 1
+                        print('[TweetDeck_Extra] Follow #' + str(counter))
                         sleep(0.5)
                     except:
                         continue
 
             if counter > to_follow:
                 break
+
+        print('[TweetDeck_Extra] Followed a total of ' + str(counter) + ' accounts.')
+        print('[TweetDeck_Extra] Thank you for using TweetDeck_Bot.')
+        print('[TweetDeck_Extra] Closing chrome instance...')
+        print('Follow me on twitter: twitter.com/rhaeyx')
+        self.chrome.close()

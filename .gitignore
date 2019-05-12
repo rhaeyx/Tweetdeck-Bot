@@ -1,0 +1,7 @@
+chromedriver.exe
+*.txt
+!tweets.txt
+*.log
+follow.py
+showerthought.py
+test.py
