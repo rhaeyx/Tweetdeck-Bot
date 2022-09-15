@@ -42,23 +42,24 @@ class tweetdeck:
         current_month = months_dict[current_month]
         current_year = int(current_year)
 
-        clicks = target_month - current_month
+        if target_year != current_year:
+            diff = target_year - current_year
+            clicks = ((12*diff) - current_month) + target_month
+        else:
+            clicks = target_month - current_month
+
         month_btn = ''
 
         if clicks == 0:
             return
         elif clicks > 0:
-            month_btn = self.chrome.find_element('xpath', '//*[@id="next-month"]')
+            month_btn = self.chrome.find_element('id', 'next-month')
         else:
-            month_btn = self.chrome.find_element('xpath', '//*[@id="prev-month"]')
-            if target_year != current_year:
-                diff = target_year - current_year
-                clicks += (12 * diff)
-
-            clicks = abs(clicks)
+            return
 
         for _ in range(clicks):
             month_btn.click()
+            sleep(0.5)
 
     def fill_up(self, text, hour, minute, period, month, day, year):
         """
@@ -92,8 +93,11 @@ class tweetdeck:
         current_month, current_year = month_text.split(' ')
         self.set_month(current_month, month, current_year, year)
 
-        date = self.chrome.find_element("link text", str(day))
-        date.click()
+        dateList = self.chrome.find_elements("link text", str(day))
+        if day <= 15:
+            self.chrome.execute_script("arguments[0].click();", dateList[0]);
+        else:
+            self.chrome.execute_script("arguments[0].click();", dateList[-1]);
 
         submit_btn = self.chrome.find_element('css selector',
             'div.antiscroll-inner.scroll-v.scroll-styled-v.padding-h--15 > div.cf.margin-t--12.margin-b--30 > div > div > button')
@@ -192,7 +196,13 @@ class tweetdeck:
                 print('[TweetDeck_Bot] Tweet #'+str(counter), 'will be tweeted on ',':'.join([str(hour), str(minute)]), period)
                 self.fill_up(line, hour, minute, period, month, day, year)
                 counter += 1
+                secondsCount = 0
                 while not self.doneTweeting():
+                    if secondsCount == 20:
+                        #Press the submit button again
+                        self.chrome.find_element('css selector', 'div.antiscroll-inner.scroll-v.scroll-styled-v.padding-h--15 > div.cf.margin-t--12.margin-b--30 > div > div > button').click()
+                        secondsCount = 0
+                    secondsCount += 1
                     sleep(1)
                 
 
